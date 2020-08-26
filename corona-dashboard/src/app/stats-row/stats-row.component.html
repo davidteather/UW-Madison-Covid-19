@@ -6,7 +6,7 @@
         title="An estimation calculated by the amount of cases reported in the last 14 days minus deaths in the last 14 days."
         style="vertical-align: super;
       font-size: 1rem;">
-        *</sup>: {{data.positive-data.pos_14_days_ago-(data.deaths-data.deaths_14_days_ago)}} (+{{data.pos_change}})<sup
+        *</sup>: {{data.positive-data.pos_14_days_ago-(data.deaths-data.deaths_14_days_ago)}} (+{{data.positive-data.pos_1_days_ago}})<sup
         data-toggle="tooltip" data-placement="right" title="The daily increase of positive results." style="vertical-align: super;
       font-size: 1rem;">
         *</sup>
@@ -20,11 +20,11 @@
     <h3 class="text-center">Daily Negative<sup data-toggle="tooltip" data-placement="right"
         title="This number underestimates the amount of negative tests as they're not required to report." style="vertical-align: super;
       font-size: 1rem;">
-        *</sup>: {{data.neg_change}}</h3>
+        *</sup>: {{data.negative-data.neg_1_days_ago}}</h3>
     <h3 class="text-center">Weekly Negative<sup data-toggle="tooltip" data-placement="right"
         title="Total negative tests in the last 7 days." style="vertical-align: super;
       font-size: 1rem;">
-        *</sup>: {{data.neg_7_days_ago}}</h3>
+        *</sup>: {{data.negative-data.neg_7_days_ago}}</h3>
 
   </div>
 </div>

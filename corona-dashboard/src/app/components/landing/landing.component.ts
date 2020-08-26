@@ -37,6 +37,8 @@ export class LandingComponent implements OnInit {
   max_per_req: number = 50;
   tmp_num: number = 0;
 
+  is_loading: boolean = true;
+
   constructor(private dataService: DataCollectorService) {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
@@ -63,43 +65,11 @@ export class LandingComponent implements OnInit {
 
     this.covid_data = {
       'on_campus': {
-        "positive": 0,
-        "negative": 0,
-        "pos_change": 0,
-        "neg_change": 0,
-        "pos_14_days_ago": 0,
-        "deaths_14_days_ago": 0,
-        "deaths": 0,
-        "negative_14_days_ago": 0,
-        "pos_7_days_ago": 0,
-        "neg_7_days_ago": 0,
-        "deaths_7_days_ago": 0
       },
       'near_campus': {
-        "positive": 0,
-        "negative": 0,
-        "pos_change": 0,
-        "neg_change": 0,
-        "pos_14_days_ago": 0,
-        "deaths_14_days_ago": 0,
-        "deaths": 0,
-        "negative_14_days_ago": 0,
-        "pos_7_days_ago": 0,
-        "neg_7_days_ago": 0,
-        "deaths_7_days_ago": 0
       },
       'madison': {
-        "positive": 0,
-        "negative": 0,
-        "pos_change": 0,
-        "neg_change": 0,
-        "pos_14_days_ago": 0,
-        "deaths_14_days_ago": 0,
-        "deaths": 0,
-        "negative_14_days_ago": 0,
-        "pos_7_days_ago": 0,
-        "neg_7_days_ago": 0,
-        "deaths_7_days_ago": 0
+
       },
       'updated': null
     }
@@ -113,17 +83,18 @@ export class LandingComponent implements OnInit {
       })
 
       dataService.getHistory(tmp_arr_2, 14).subscribe((results) => {
-        this.process_14_days(results)
+        this.process_history(results, 14)
       })
 
       dataService.getHistory(tmp_arr_2, 7).subscribe((results) => {
-        this.process_7_days(results)
+        this.process_history(results, 7)
       })
 
       dataService.getHistory(tmp_arr_2, 1).subscribe((results) => {
         this.process_history(results, 1)
       })
     }
+    this.is_loading = false;
   }
 
   refine_number(inp) {
@@ -145,27 +116,11 @@ export class LandingComponent implements OnInit {
       var key_word = key_arr[i]
       results.features.forEach(e => {
         if (key.includes(e.attributes.GEOID)) {
-          this.covid_data[key_word].positive += this.refine_number(e.attributes.POSITIVE);
-          this.covid_data[key_word].negative += this.refine_number(e.attributes.NEGATIVE);
-          this.covid_data[key_word].pos_change += this.refine_number(e.attributes.POS_NEW);
-          this.covid_data[key_word].neg_change += this.refine_number(e.attributes.NEG_NEW);
-          this.covid_data[key_word].deaths += this.refine_number(e.attributes.DEATHS)
-        }
-      })
-    }
-  }
-
-  process_14_days(results) {
-    var arr_arr = [this.on_campus, this.near_campus, this.madison]
-    var key_arr = ["on_campus", "near_campus", "madison"]
-    for (var i = 0; i < 4; i++) {
-      var key = arr_arr[i]
-      var key_word = key_arr[i]
-      results.features.forEach(e => {
-        if (key.includes(e.attributes.GEOID)) {
-          this.covid_data[key_word].pos_14_days_ago += this.refine_number(e.attributes.POSITIVE);
-          this.covid_data[key_word].negative_14_days_ago += this.refine_number(e.attributes.NEGATIVE);
-          this.covid_data[key_word].deaths_14_days_ago += this.refine_number(e.attributes.DEATHS)
+          this.covid_data[key_word].positive = this.covid_data[key_word].positive + this.refine_number(e.attributes.POSITIVE) || this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word].negative = this.covid_data[key_word].negative + this.refine_number(e.attributes.NEGATIVE) || this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word].pos_change = this.covid_data[key_word].pos_change + this.refine_number(e.attributes.POS_NEW) || this.refine_number(e.attributes.POS_NEW);
+          this.covid_data[key_word].neg_change = this.covid_data[key_word].neg_change + this.refine_number(e.attributes.NEG_NEW) || this.refine_number(e.attributes.NEG_NEW);
+          this.covid_data[key_word].deaths = this.covid_data[key_word].deaths + this.refine_number(e.attributes.DEATHS) || this.refine_number(e.attributes.DEATHS);
         }
       })
     }
@@ -179,26 +134,10 @@ export class LandingComponent implements OnInit {
       var key_word = key_arr[i]
       results.features.forEach(e => {
         if (key.includes(e.attributes.GEOID)) {
-          this.covid_data[key_word]['pos_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.POSITIVE);
-          this.covid_data[key_word]['negative_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.NEGATIVE);
-          this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.DEATHS)
-        }
-      })
-    }
-  }
-
-  process_7_days(results) {
-    var arr_arr = [this.on_campus, this.near_campus, this.madison]
-    var key_arr = ["on_campus", "near_campus", "madison"]
-    for (var i = 0; i < 4; i++) {
-      var key = arr_arr[i]
-      var key_word = key_arr[i]
-      results.features.forEach(e => {
-        if (key.includes(e.attributes.GEOID)) {
-          this.covid_data[key_word].pos_7_days_ago += this.refine_number(e.attributes.POSITIVE);
-          this.covid_data[key_word].neg_7_days_ago += this.refine_number(e.attributes.NEGATIVE);
-          this.covid_data[key_word].deaths_7_days_ago += this.refine_number(e.attributes.DEATHS)
-        }
+          this.covid_data[key_word]['pos_' + String(days) + '_days_ago'] = this.covid_data[key_word]['pos_' + String(days) + '_days_ago']  + this.refine_number(e.attributes.POSITIVE) || this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word]['neg_' + String(days) + '_days_ago'] = this.covid_data[key_word]['neg_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.NEGATIVE) || this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] = this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.DEATHS) || this.refine_number(e.attributes.DEATHS)
+        } 
       })
     }
   }
