@@ -9,7 +9,15 @@ export class DataCollectorService {
 
   constructor(private http: HttpClient) { }
 
-  getData(): Observable<any> {
-    return this.http.get(`https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/FeatureServer/9/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&maxAllowableOffset=9&geometry={"xmin":-12077033.976044899,"ymin":03781.366976716,"xmax":5304580.83292637,"ymax":5436234.510095246,"spatialReference":{"wkid":102100}}&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*&outSR=102100`)
+  getData(geoIDs:any[]): Observable<any> {
+    var filter = "";
+    for (var x=0; x<geoIDs.length; x++) {
+      
+      filter = filter + `GEOID='${geoIDs[x]}'`
+      if (x != geoIDs.length-1) {
+        filter = filter + " OR "
+      }
+    }
+    return this.http.get(`https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/FeatureServer/10/query?outFields=*&returnGeometry=false&resultOffset=0&resultRecordCount=${geoIDs.length}&f=json&orderByFields=DATE desc&where=GEO = 'Census tract' AND ${filter}`)
   }
 }

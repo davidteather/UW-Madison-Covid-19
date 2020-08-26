@@ -10,69 +10,122 @@ declare var $: any;
 
 
 export class LandingComponent implements OnInit {
-  on_campus: string[] = ['32', '11.02', '11.01', '16.03', '16.06'];
-  near_campus: string[] = ['101', '8', '9.02', '3', '9.01', '10', '12', '16.05',
-    '16.04', '17.04', '17.05', '18.02', '18.04', '19', '21',
-    '13', '9.01', '2.01', '4.02', '10'];
-  madison: string[] = ['11.02', '32', '101', '1', '2.05', '109.01',
-    '109.03', '5.04', '4.06', '4.05', '2.04', '4.07', '4.08', '2.02',
-    '5.01', '4.02', '3', '2.01', '7', '14.02', '14.01', '15.01', '4.01',
-    '8', '9.02', '10', '9.01', '13', '12', '16.05', '16.06', '11.01',
-    '16.03', '16.04', '17.04', '17.05', '19', '18.02', '18.04', '21',
-    '22', '102', '23.01', '23.02', '24.01', '24.02', '25', '26.01',
-    '20', '27', '30.01', '28', '103', '31', '29', '104'];
+  on_campus: string[] = ['55025001102', '55063001101', '55105003200', '55025003200',
+    '55079003200', '55127001603', '55063001102', '55025001606', '55025001101', '55025001603']
+  near_campus: string[] = ['55117010100', '55079002100', '55117000201', '55105000300', '55079001200', '55105001900', '55059000800', '55105001000', '55063000300', '55063000800',
+    '55059001900', '55101001802', '55105000800', '55079001300', '55025000201', '55079001900', '55025000402', '55105002100', '55063001200', '55079001000', '55025010100', '55127000902', '55059001300', '55025001000', '55063001000', '55025000901', '55101001900', '55117000800', '55059001200', '55111000402',
+    '55127000800', '55059000300', '55101000300', '55079000201', '55127001000', '55079000800', '55025001300', '55059001000', '55101000901', '55101002100',
+    '55025001605', '55025000800', '55127000901', '55101000800', '55127001604', '55117000300', '55117001000', '55111000800', '55059002100', '55025001802', '55101001705', '55025000300', '55025001804', '55025001705', '55025000902', '55111000300', '55025001704', '55025001604', '55025002100', '55025001200', '55025001900']
+  madison: string[] = ['55105000100', '55025001102', '55117010100', '55127000501', '55105002700', '55117010400', '55063001101', '55105003200', '55079002200',
+    '55079002700', '55105002200', '55025003200', '55079002500', '55079002900', '55079002100', '55079002800', '55025002601', '55101000100', '55117000201',
+    '55105000300', '55079002000', '55079001200', '55105001900', '55117010300', '55025010200', '55059000800', '55105001000', '55063000300', '55063000800',
+    '55059001900', '55025001501', '55101001802', '55025000408', '55079003200', '55105000800', '55127001603', '55059002500', '55117000100', '55117010200',
+    '55079001300', '55059003001', '55105002800', '55105002500', '55025000201', '55025002800', '55079001900', '55079000501', '55025000402', '55105002100',
+    '55105002000', '55127001501', '55063001200', '55079001000', '55025010100', '55127000902', '55059002200', '55059001300', '55111000700', '55079003100',
+    '55063000700', '55105000700', '55025002301', '55025001000', '55025002900', '55025002500', '55117000202', '55025000100', '55079000700', '55063001000',
+    '55025000901', '55101001900', '55117000800', '55059001200', '55111000402', '55127000800', '55059000300', '55025002302', '55101001501', '55059002700',
+    '55101000300', '55063001102', '55079000201', '55025000202', '55127001000', '55025002401', '55025000406', '55079000800', '55105003001', '55025001300',
+    '55059001000', '55101000901', '55101002100', '55059002800', '55059002000', '55025002402', '55025000401', '55025010400', '55025000700', '55025010903',
+    '55025001605', '55059000700', '55025000800', '55105002601', '55127000901', '55025010300', '55025002700', '55101000800', '55059000100', '55101002800',
+    '55127001604', '55079000202', '55117000300', '55117001000', '55105003100', '55025001606', '55025002200', '55025000204', '55111000800', '55025003001',
+    '55025001101', '55025000205', '55025001603', '55059002100', '55025001802', '55101001705', '55059002601', '55025000501', '55025000300', '55025001402',
+    '55025000405', '55025000407', '55101002402', '55101000700', '55025001804', '55025001705', '55101002401', '55025001401', '55025000902', '55025003100',
+    '55111000300', '55105002900', '55025001704', '55025000504', '55025001604', '55111000401', '55111000100', '55025002100', '55025001200', '55025002000', '55025010901', '55025001900'];
   date_obj: any;
-
+  tmp_arr: any[];
   covid_data: any;
+  max_per_req: number = 61;
+  tmp_num: number = 0;
 
   constructor(private dataService: DataCollectorService) {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+    this.tmp_arr = [];
 
-    dataService.getData().subscribe((results) => {
-      this.date_obj =  new Date(results.features[0].attributes.DATE)
-      this.covid_data = {
-        'on_campus': {
-          "positive": 0,
-          "negative": 0
-        },
-        'near_campus': {
-          "positive": 0,
-          "negative": 0
-        },
-        'madison': {
-          "positive": 0,
-          "negative": 0
-        },
-        'updated': (this.date_obj.getMonth()+1) + "-"  + this.date_obj.getDate() + "-" + this.date_obj.getFullYear()
+    this.on_campus.forEach(element => {
+      if (!this.tmp_arr.includes(element)) {
+        this.tmp_arr.push(element)
+      }
+    });
+
+    this.near_campus.forEach(element => {
+      if (!this.tmp_arr.includes(element)) {
+        this.tmp_arr.push(element)
+      }
+    });
+
+    this.madison.forEach(element => {
+      if (!this.tmp_arr.includes(element)) {
+        this.tmp_arr.push(element)
+      }
+    }); 
+
+    this.covid_data = {
+      'on_campus': {
+        "positive": 0,
+        "negative": 0,
+        "pos_change": 0,
+        "neg_change": 0
+      },
+      'near_campus': {
+        "positive": 0,
+        "negative": 0,
+        "pos_change": 0,
+        "neg_change": 0
+      },
+      'madison': {
+        "positive": 0,
+        "negative": 0,
+        "pos_change": 0,
+        "neg_change": 0
+      },
+      'updated': null
+    }
+
+    while (this.tmp_arr.length > 0) {
+      dataService.getData(this.tmp_arr.splice(this.tmp_num, this.max_per_req+this.tmp_num)).subscribe((results) => {
+        this.process_results(results)
+      })
+    }
+  }
+
+  refine_number(inp) {
+    if (inp > 0) {
+      return inp
+    } else {
+      return 0
+    }
+  }
+
+  process_results(results) {
+    this.date_obj = new Date(results.features[0].attributes.DATE)
+    this.covid_data.updated = (this.date_obj.getMonth() + 1) + "-" + this.date_obj.getDate() + "-" + this.date_obj.getFullYear();
+    results.features.forEach(e => {
+      if (this.on_campus.includes(e.attributes.GEOID)) {
+        this.covid_data.on_campus.positive += this.refine_number(e.attributes.POSITIVE);
+        this.covid_data.on_campus.negative += this.refine_number(e.attributes.NEGATIVE);
+        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
+        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
+
+      }
+      
+      if (this.near_campus.includes(e.attributes.GEOID)) {
+        this.covid_data.near_campus.positive += this.refine_number(e.attributes.POSITIVE);
+        this.covid_data.near_campus.negative += this.refine_number(e.attributes.NEGATIVE);
+        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
+        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
       }
 
-      function refine_number(inp) {
-        if (inp > 0) {
-          return inp
-        } else {
-          return 0
-        }
+      if (this.madison.includes(e.attributes.GEOID)) {
+        this.covid_data.madison.positive += this.refine_number(e.attributes.POSITIVE);
+        this.covid_data.madison.negative += this.refine_number(e.attributes.NEGATIVE);
+        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
+        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
       }
-      results.features.forEach(e => {
-        
-        if (this.on_campus.includes(e.attributes.NAME)) {
-          this.covid_data.on_campus.positive += refine_number(e.attributes.POSITIVE);
-          this.covid_data.on_campus.negative += refine_number(e.attributes.NEGATIVE);
-        }
+      
+    });
 
-        if (this.near_campus.includes(e.attributes.NAME)) {
-          this.covid_data.near_campus.positive += refine_number(e.attributes.POSITIVE);
-          this.covid_data.near_campus.negative +=refine_number(e.attributes.NEGATIVE);
-        }
-
-        if (this.madison.includes(e.attributes.NAME)) {
-          this.covid_data.madison.positive += refine_number(e.attributes.POSITIVE);
-          this.covid_data.madison.negative += refine_number(e.attributes.NEGATIVE);
-        }
-      });
-    })
   }
 
   ngOnInit(): void {
