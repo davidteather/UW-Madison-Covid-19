@@ -34,7 +34,7 @@ export class LandingComponent implements OnInit {
   date_obj: any;
   tmp_arr: any[];
   covid_data: any;
-  max_per_req: number = 61;
+  max_per_req: number = 50;
   tmp_num: number = 0;
 
   constructor(private dataService: DataCollectorService) {
@@ -59,33 +59,69 @@ export class LandingComponent implements OnInit {
       if (!this.tmp_arr.includes(element)) {
         this.tmp_arr.push(element)
       }
-    }); 
+    });
 
     this.covid_data = {
       'on_campus': {
         "positive": 0,
         "negative": 0,
         "pos_change": 0,
-        "neg_change": 0
+        "neg_change": 0,
+        "pos_14_days_ago": 0,
+        "deaths_14_days_ago": 0,
+        "deaths": 0,
+        "negative_14_days_ago": 0,
+        "pos_7_days_ago": 0,
+        "neg_7_days_ago": 0,
+        "deaths_7_days_ago": 0
       },
       'near_campus': {
         "positive": 0,
         "negative": 0,
         "pos_change": 0,
-        "neg_change": 0
+        "neg_change": 0,
+        "pos_14_days_ago": 0,
+        "deaths_14_days_ago": 0,
+        "deaths": 0,
+        "negative_14_days_ago": 0,
+        "pos_7_days_ago": 0,
+        "neg_7_days_ago": 0,
+        "deaths_7_days_ago": 0
       },
       'madison': {
         "positive": 0,
         "negative": 0,
         "pos_change": 0,
-        "neg_change": 0
+        "neg_change": 0,
+        "pos_14_days_ago": 0,
+        "deaths_14_days_ago": 0,
+        "deaths": 0,
+        "negative_14_days_ago": 0,
+        "pos_7_days_ago": 0,
+        "neg_7_days_ago": 0,
+        "deaths_7_days_ago": 0
       },
       'updated': null
     }
 
+    this.process_campus()
+
     while (this.tmp_arr.length > 0) {
-      dataService.getData(this.tmp_arr.splice(this.tmp_num, this.max_per_req+this.tmp_num)).subscribe((results) => {
+      var tmp_arr_2 = this.tmp_arr.splice(this.tmp_num, this.max_per_req + this.tmp_num)
+      dataService.getData(tmp_arr_2).subscribe((results) => {
         this.process_results(results)
+      })
+
+      dataService.getHistory(tmp_arr_2, 14).subscribe((results) => {
+        this.process_history(results, 14)
+      })
+
+      dataService.getHistory(tmp_arr_2, 7).subscribe((results) => {
+        this.process_history(results, 7)
+      })
+
+      dataService.getHistory(tmp_arr_2, 1).subscribe((results) => {
+        this.process_history(results, 1)
       })
     }
   }
@@ -101,35 +137,72 @@ export class LandingComponent implements OnInit {
   process_results(results) {
     this.date_obj = new Date(results.features[0].attributes.DATE)
     this.covid_data.updated = (this.date_obj.getMonth() + 1) + "-" + this.date_obj.getDate() + "-" + this.date_obj.getFullYear();
-    results.features.forEach(e => {
-      if (this.on_campus.includes(e.attributes.GEOID)) {
-        this.covid_data.on_campus.positive += this.refine_number(e.attributes.POSITIVE);
-        this.covid_data.on_campus.negative += this.refine_number(e.attributes.NEGATIVE);
-        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
-        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
 
-      }
-      
-      if (this.near_campus.includes(e.attributes.GEOID)) {
-        this.covid_data.near_campus.positive += this.refine_number(e.attributes.POSITIVE);
-        this.covid_data.near_campus.negative += this.refine_number(e.attributes.NEGATIVE);
-        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
-        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
-      }
-
-      if (this.madison.includes(e.attributes.GEOID)) {
-        this.covid_data.madison.positive += this.refine_number(e.attributes.POSITIVE);
-        this.covid_data.madison.negative += this.refine_number(e.attributes.NEGATIVE);
-        this.covid_data.on_campus.pos_change += this.refine_number(e.attributes.POS_NEW);
-        this.covid_data.on_campus.neg_change += this.refine_number(e.attributes.NEG_NEW);
-      }
-      
-    });
-
+    var arr_arr = [this.on_campus, this.near_campus, this.madison]
+    var key_arr = ["on_campus", "near_campus", "madison"]
+    for (var i = 0; i < 4; i++) {
+      var key = arr_arr[i]
+      var key_word = key_arr[i]
+      results.features.forEach(e => {
+        if (key.includes(e.attributes.GEOID)) {
+          this.covid_data[key_word].positive += this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word].negative += this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word].pos_change += this.refine_number(e.attributes.POS_NEW);
+          this.covid_data[key_word].neg_change += this.refine_number(e.attributes.NEG_NEW);
+          this.covid_data[key_word].deaths += this.refine_number(e.attributes.DEATHS)
+        }
+      })
+    }
   }
 
-  ngOnInit(): void {
+  process_history(results, days) {
+    var arr_arr = [this.on_campus, this.near_campus, this.madison]
+    var key_arr = ["on_campus", "near_campus", "madison"]
 
+    for (var i = 0; i < key_arr.length; i++) {
+      this.covid_data[key_arr[i]]['positive_' + String(days) + '_days_ago'] = 0
+      this.covid_data[key_arr[i]]['negative_' + String(days) + '_days_ago'] = 0
+      this.covid_data[key_arr[i]]['deaths_' + String(days) + '_days_ago'] = 0
+    }
+
+    for (var i = 0; i < key_arr.length; i++) {
+      var key = arr_arr[i]
+      var key_word = key_arr[i]
+      results.features.forEach(e => {
+        if (key.includes(e.attributes.GEOID)) {
+          this.covid_data[key_word]['positive_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word]['negative_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.DEATHS)
+        }
+      })
+    }
+  }
+
+  process_7_days(results) {
+    var arr_arr = [this.on_campus, this.near_campus, this.madison]
+    var key_arr = ["on_campus", "near_campus", "madison"]
+    for (var i = 0; i < 4; i++) {
+      var key = arr_arr[i]
+      var key_word = key_arr[i]
+      results.features.forEach(e => {
+        if (key.includes(e.attributes.GEOID)) {
+          this.covid_data[key_word].pos_7_days_ago += this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word].neg_7_days_ago += this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word].deaths_7_days_ago += this.refine_number(e.attributes.DEATHS)
+        }
+      })
+    }
+  }
+
+  
+
+  process_campus() {
+    //var url = "http://www.whateverorigin.org/get?url=" + "https://www.wisc.edu/dashboard/"
+    // $.get(url, function (response) { console.log(response); });
+  }
+
+
+  ngOnInit(): void {
   }
 
 }

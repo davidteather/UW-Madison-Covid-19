@@ -11,19 +11,7 @@
     </div>
   </div>
 
-  <div class="row" style="margin-top:20px;">
-    <div class="col-md-6" style="margin-top:10px;">
-      <i class="text-center fas fa-virus mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#fc5f5f;"></i>
-      <h3 class="text-center">Positive: {{covid_data.on_campus.positive}} (+{{covid_data.madison.pos_change}})</h3>
-    </div>
-
-    <div class="col-md-6" style="margin-top:20px;">
-      <i class="text-center fas fa-walking mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#87fc83;"></i>
-      <h3 class="text-center">Negative: {{covid_data.on_campus.negative}} (+{{covid_data.madison.neg_change}})</h3>
-    </div>
-  </div>
+  <app-stats-row [data]="covid_data.on_campus"></app-stats-row>
 
 
   <div class="row" style="width:100%;margin-top:20px;">
@@ -34,19 +22,7 @@
       ?</sup></h1>
   </div>
 
-  <div class="row" style="margin-top:20px;">
-    <div class="col-md-6" style="margin-top:10px;">
-      <i class="text-center fas fa-virus mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#fc5f5f;"></i>
-      <h3 class="text-center">Positive: {{covid_data.near_campus.positive}} (+{{covid_data.madison.pos_change}})</h3>
-    </div>
-
-    <div class="col-md-6" style="margin-top:20px;">
-      <i class="text-center fas fa-walking mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#87fc83;"></i>
-      <h3 class="text-center">Negative: {{covid_data.near_campus.negative}} (+{{covid_data.madison.neg_change}})</h3>
-    </div>
-  </div>
+  <app-stats-row [data]="covid_data.near_campus"></app-stats-row>
 
   <div class="row" style="width:100%;margin-top:20px;">
     <h1 class="text-center mx-auto">&nbsp;&nbsp;Madison, WI<sup data-toggle="tooltip" data-placement="right"
@@ -56,19 +32,7 @@
       ?</sup></h1>
   </div>
 
-  <div class="row" style="margin-top:20px;">
-    <div class="col-md-6" style="margin-top:10px;">
-      <i class="text-center fas fa-virus mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#fc5f5f;"></i>
-      <h3 class="text-center">Positive: {{covid_data.madison.positive}} (+{{covid_data.madison.pos_change}})</h3>
-    </div>
-
-    <div class="col-md-6" style="margin-top:20px;">
-      <i class="text-center fas fa-walking mx-auto"
-        style="font-size:10rem;display: inline-block; width:100%; color:#87fc83;"></i>
-      <h3 class="text-center">Negative: {{covid_data.madison.negative}} (+{{covid_data.madison.neg_change}})</h3>
-    </div>
-  </div>
+  <app-stats-row [data]="covid_data.madison"></app-stats-row>
 
   <div class="row" style="width:100%;margin-top:20px;">
     <h6 class="text-center mx-auto">Last Updated: {{covid_data.updated}}</h6>
