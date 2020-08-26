@@ -21,6 +21,7 @@ export class LandingComponent implements OnInit {
     '16.03', '16.04', '17.04', '17.05', '19', '18.02', '18.04', '21',
     '22', '102', '23.01', '23.02', '24.01', '24.02', '25', '26.01',
     '20', '27', '30.01', '28', '103', '31', '29', '104'];
+  date_obj: any;
 
   covid_data: any;
 
@@ -30,6 +31,7 @@ export class LandingComponent implements OnInit {
     })
 
     dataService.getData().subscribe((results) => {
+      this.date_obj =  new Date(results.features[0].attributes.DATE)
       this.covid_data = {
         'on_campus': {
           "positive": 0,
@@ -42,7 +44,8 @@ export class LandingComponent implements OnInit {
         'madison': {
           "positive": 0,
           "negative": 0
-        }
+        },
+        'updated': (this.date_obj.getMonth()+1) + "-"  + this.date_obj.getDate() + "-" + this.date_obj.getFullYear()
       }
 
       function refine_number(inp) {
