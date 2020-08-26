@@ -113,11 +113,11 @@ export class LandingComponent implements OnInit {
       })
 
       dataService.getHistory(tmp_arr_2, 14).subscribe((results) => {
-        this.process_history(results, 14)
+        this.process_14_days(results)
       })
 
       dataService.getHistory(tmp_arr_2, 7).subscribe((results) => {
-        this.process_history(results, 7)
+        this.process_7_days(results)
       })
 
       dataService.getHistory(tmp_arr_2, 1).subscribe((results) => {
@@ -155,22 +155,31 @@ export class LandingComponent implements OnInit {
     }
   }
 
-  process_history(results, days) {
+  process_14_days(results) {
     var arr_arr = [this.on_campus, this.near_campus, this.madison]
     var key_arr = ["on_campus", "near_campus", "madison"]
-
-    for (var i = 0; i < key_arr.length; i++) {
-      this.covid_data[key_arr[i]]['positive_' + String(days) + '_days_ago'] = 0
-      this.covid_data[key_arr[i]]['negative_' + String(days) + '_days_ago'] = 0
-      this.covid_data[key_arr[i]]['deaths_' + String(days) + '_days_ago'] = 0
-    }
-
-    for (var i = 0; i < key_arr.length; i++) {
+    for (var i = 0; i < 4; i++) {
       var key = arr_arr[i]
       var key_word = key_arr[i]
       results.features.forEach(e => {
         if (key.includes(e.attributes.GEOID)) {
-          this.covid_data[key_word]['positive_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word].pos_14_days_ago += this.refine_number(e.attributes.POSITIVE);
+          this.covid_data[key_word].negative_14_days_ago += this.refine_number(e.attributes.NEGATIVE);
+          this.covid_data[key_word].deaths_14_days_ago += this.refine_number(e.attributes.DEATHS)
+        }
+      })
+    }
+  }
+
+  process_history(results, days) {
+    var arr_arr = [this.on_campus, this.near_campus, this.madison]
+    var key_arr = ["on_campus", "near_campus", "madison"]
+    for (var i = 0; i < 4; i++) {
+      var key = arr_arr[i]
+      var key_word = key_arr[i]
+      results.features.forEach(e => {
+        if (key.includes(e.attributes.GEOID)) {
+          this.covid_data[key_word]['pos_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.POSITIVE);
           this.covid_data[key_word]['negative_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.NEGATIVE);
           this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] += this.refine_number(e.attributes.DEATHS)
         }
