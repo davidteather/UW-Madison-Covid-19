@@ -4,7 +4,7 @@ This is another Covid-19 dashboard designed to track the current positive & nega
 
 ![](https://visitor-badge.laobi.icu/badge?page_id=davidteather.UW-Madison-Covid-19)
 
-You can visit the website [here]().
+You can visit the website at [madisoncovid19.com](http://madisoncovid19.com/).
 
 Consider sponsoring me on GitHub [here](https://github.com/sponsors/davidteather) or donating on [paypal](https://www.paypal.me/dteather)
 
