@@ -76,24 +76,28 @@ export class LandingComponent implements OnInit {
 
     this.process_campus()
 
-    while (this.tmp_arr.length > 0) {
-      var tmp_arr_2 = this.tmp_arr.splice(this.tmp_num, this.max_per_req + this.tmp_num)
-      dataService.getData(tmp_arr_2).subscribe((results) => {
-        this.process_results(results)
-      })
+    dataService.getDataTimestamp().subscribe((res) => {
+      while (this.tmp_arr.length > 0) {
+        var tmp_arr_2 = this.tmp_arr.splice(this.tmp_num, this.max_per_req + this.tmp_num)
+        dataService.getData(tmp_arr_2).subscribe((results) => {
+          this.process_results(results)
+        })
+  
+        dataService.getHistory(tmp_arr_2, 14, res.features[0].attributes.DATE).subscribe((results) => {
+          this.process_history(results, 14)
+        })
+  
+        dataService.getHistory(tmp_arr_2, 7, res.features[0].attributes.DATE).subscribe((results) => {
+          this.process_history(results, 7)
+        })
+  
+        dataService.getHistory(tmp_arr_2, 1, res.features[0].attributes.DATE).subscribe((results) => {
+          this.process_history(results, 1)
+        })
+      }
+    })
 
-      dataService.getHistory(tmp_arr_2, 14).subscribe((results) => {
-        this.process_history(results, 14)
-      })
-
-      dataService.getHistory(tmp_arr_2, 7).subscribe((results) => {
-        this.process_history(results, 7)
-      })
-
-      dataService.getHistory(tmp_arr_2, 1).subscribe((results) => {
-        this.process_history(results, 1)
-      })
-    }
+    
     this.is_loading = false;
   }
 

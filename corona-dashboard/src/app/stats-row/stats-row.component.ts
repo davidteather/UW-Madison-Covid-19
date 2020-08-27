@@ -9,6 +9,7 @@ export class StatsRowComponent implements OnInit {
 
   @Input() data: any;
   constructor() {
+    
    }
 
   ngOnInit(): void {
