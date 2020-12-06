@@ -1,8 +1,9 @@
 <div class="row" style="margin-top:20px;">
-  <div class="col-md-6" style="margin-top:10px;">
+  <div class="col-md-4" style="margin-top:10px;">
     <i class="text-center fas fa-virus mx-auto"
       style="font-size:10rem; top:8px;position: relative;width:100%; color:#fc5f5f;margin-bottom:15px;"></i>
-    <h3 class="text-center" style="margin-top:10px;">Active Cases: {{data.positive-data.pos_14_days_ago-(data.deaths-data.deaths_14_days_ago)}}
+    <h3 class="text-center" style="margin-top:10px;">Active Cases:
+      {{data.positive-data.pos_14_days_ago-(data.deaths-data.deaths_14_days_ago)}}
       (+{{data.positive-data.pos_1_days_ago}})<sup data-toggle="tooltip" data-placement="right" data-html="true"
         title="<b>Active cases:</b> An estimation using the total amount of positive tests in the last 14 days minus any deaths. <br><br>The number in the parentheses is how many new cases appeared in the last day."
         style="vertical-align: super;
@@ -12,15 +13,30 @@
     <h3 class="text-center">Total Positive: {{data.positive}}</h3>
   </div>
 
-  <div class="col-md-6" style="margin-top:20px;">
+  <div class="col-md-4" style="margin-top:20px;">
     <i class="text-center fas fa-walking mx-auto"
       style="font-size:10rem; position: relative;width:100%; color:#87fc83;margin-bottom:15px;"></i>
     <h3 class="text-center">Daily Negative: {{data.negative-data.neg_1_days_ago}} <sup data-toggle="tooltip"
         data-placement="right"
-        title="This number underestimates the amount of total negative tests, because it only includes people who had their test results reported electronically to Wisconsin's DHS." style="vertical-align: super;
+        title="This number underestimates the amount of total negative tests, because it only includes people who had their test results reported electronically to Wisconsin's DHS."
+        style="vertical-align: super;
     font-size: 1rem;">
         *</sup></h3>
     <h3 class="text-center">Weekly Negative: {{data.negative-data.neg_7_days_ago}}</h3>
-
   </div>
+
+  <div class="col-md-4" style="margin-top:10px;">
+    <i class="text-center fas fa-hospital mx-auto"
+    style="font-size:10rem; position: relative;width:100%; color:#fc5f5f;margin-bottom:15px;"></i>
+    <h3 class="text-center" style="margin-top:10px;">Hospitalized:
+      {{data.hosp_14_days_ago}}
+      (+{{data.hosp_total-data.hosp_1_days_ago}})<sup data-toggle="tooltip" data-placement="right" data-html="true"
+        title="<b>Hospitalized:</b> An estimation using the total amount of confirmed hospitalizations in the last 14 days. <br><br>The number in the parentheses is how many were hospitalized in the last day."
+        style="vertical-align: super;
+      font-size: 1rem;">
+        *</sup>
+    </h3>
+    <h3 class="text-center">Total Hospitalized: {{data.hosp_total}}</h3>
+  </div>
+
 </div>

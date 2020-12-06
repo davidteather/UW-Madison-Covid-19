@@ -84,6 +84,7 @@ export class LandingComponent implements OnInit {
         })
   
         dataService.getHistory(tmp_arr_2, 14, res.features[0].attributes.DATE).subscribe((results) => {
+          console.log(results);
           this.process_history(results, 14)
         })
   
@@ -125,6 +126,7 @@ export class LandingComponent implements OnInit {
           this.covid_data[key_word].pos_change = this.covid_data[key_word].pos_change + this.refine_number(e.attributes.POS_NEW) || this.refine_number(e.attributes.POS_NEW);
           this.covid_data[key_word].neg_change = this.covid_data[key_word].neg_change + this.refine_number(e.attributes.NEG_NEW) || this.refine_number(e.attributes.NEG_NEW);
           this.covid_data[key_word].deaths = this.covid_data[key_word].deaths + this.refine_number(e.attributes.DEATHS) || this.refine_number(e.attributes.DEATHS);
+          this.covid_data[key_word].hosp_total = this.covid_data[key_word].hosp_total + this.refine_number(e.attributes.HOSP_YES) || this.refine_number(e.attributes.HOSP_YES);
         }
       })
     }
@@ -140,7 +142,8 @@ export class LandingComponent implements OnInit {
         if (key.includes(e.attributes.GEOID)) {
           this.covid_data[key_word]['pos_' + String(days) + '_days_ago'] = this.covid_data[key_word]['pos_' + String(days) + '_days_ago']  + this.refine_number(e.attributes.POSITIVE) || this.refine_number(e.attributes.POSITIVE);
           this.covid_data[key_word]['neg_' + String(days) + '_days_ago'] = this.covid_data[key_word]['neg_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.NEGATIVE) || this.refine_number(e.attributes.NEGATIVE);
-          this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] = this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.DEATHS) || this.refine_number(e.attributes.DEATHS)
+          this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] = this.covid_data[key_word]['deaths_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.DEATHS) || this.refine_number(e.attributes.DEATHS);
+          this.covid_data[key_word]['hosp_' + String(days) + '_days_ago'] = this.covid_data[key_word]['hosp_' + String(days) + '_days_ago'] + this.refine_number(e.attributes.HOSP_YES) || this.refine_number(e.attributes.HOSP_YES);
         } 
       })
     }
